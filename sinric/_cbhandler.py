@@ -22,6 +22,7 @@ from uuid import uuid4
 from ._lockController import LockStateController
 from ._signature import Signature
 from ._leafyBucket import LeakyBucket
+from ._rawReturn import RawReturn
 
 
 # TODO fix target temperature Duration
@@ -29,7 +30,7 @@ from ._leafyBucket import LeakyBucket
 # noinspection PyBroadException
 class CallBackHandler(PowerLevel, PowerController, BrightnessController, ColorController, ColorTemperatureController,
                       ThermostateMode, RangeValueController, TemperatureController, TvController, SpeakerController,
-                      LockStateController, Signature):
+                      LockStateController, Signature, RawReturn):
     def __init__(self, callbacks, trace_bool, logger, enable_track=False, secretKey=""):
         self.myHmac = None
         self.secretKey = secretKey
@@ -47,6 +48,7 @@ class CallBackHandler(PowerLevel, PowerController, BrightnessController, ColorCo
         Signature.__init__(self, self.secretKey)
         SpeakerController.__init__(self, 0)
         ColorTemperatureController.__init__(self, 0, [2200, 2700, 4000, 5500, 7000])
+        # RawReturn.__init__(self)
         self.callbacks = callbacks
         self.logger = logger
         self.trace_response = trace_bool
@@ -83,8 +85,19 @@ class CallBackHandler(PowerLevel, PowerController, BrightnessController, ColorCo
             }
 
             signature = self.getSignature(payload)
-
+            print("*****************************Response**************************")
+            jayson = {"header": header, "payload": payload, "signature": signature}
+            print(dumps(jayson, indent=2))
             return {"header": header, "payload": payload, "signature": signature}
+    
+        if jsn.get('payload'):
+            try:
+                assert (self.verifySignature(jsn.get('payload'), jsn.get("signature").get("HMAC")))
+                await self.rawCallback(jsn, self.callbacks['raw'])
+            except AssertionError:
+                self.logger.error("Signature verification failed for " + jsn.get('payload').get('action'))
+            except Exception as e:
+                print(f'Error Occured {e}')
 
         if jsn.get('payload').get('action') == JSON_COMMANDS.get('SETPOWERSTATE'):
             try:

@@ -1,0 +1,45 @@
+************Request Recieved from Sinric Pro Server*********
+{
+  "header": {
+    "payloadVersion": 2,
+    "signatureVersion": 1
+  },
+  "payload": {
+    "action": "setPowerState",
+    "clientId": "alexa-skill",
+    "createdAt": 1590839083,
+    "deviceAttributes": [],
+    "deviceId": "5ec9153676b86a477f5e0e05",
+    "replyToken": "cde79bc9-231f-4109-97ea-4c1bac9a5e85",
+    "type": "request",
+    "value": {
+      "state": "Off"
+    }
+  },
+  "signature": {
+    "HMAC": "lLE35GOv+G5aa3h0t+VFGjIrcO5aBaquX0VzipPTl/4="
+  }
+}
+*****************************Response**************************
+{
+  "header": {
+    "payloadVersion": 2,
+    "signatureVersion": 1
+  },
+  "payload": {
+    "action": "setPowerState",
+    "clientId": "alexa-skill",
+    "createdAt": 1590839084,
+    "deviceId": "5ec9153676b86a477f5e0e05",
+    "message": "OK",
+    "replyToken": "cde79bc9-231f-4109-97ea-4c1bac9a5e85",
+    "success": true,
+    "type": "response",
+    "value": {
+      "state": "Off"
+    }
+  },
+  "signature": {
+    "HMAC": "A7oRIcgsVFi1vK+HUaXEo34Sdsb4sLEDMNgvxlWzIoQ="
+  }
+}
